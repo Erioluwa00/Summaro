@@ -8,13 +8,14 @@ const api = axios.create({
 
 // src/services/api.js
 
-// Simple upload function
+// src/services/api.js
+
 export const uploadAudio = async (audioFile) => {
   const formData = new FormData();
   formData.append('audio', audioFile);
 
   try {
-    console.log('📤 Starting upload...');
+    console.log('📤 Starting upload to backend...');
     
     const response = await fetch('http://localhost:5000/api/upload-audio', {
       method: 'POST',
@@ -25,16 +26,27 @@ export const uploadAudio = async (audioFile) => {
     
     // Get response text first
     const responseText = await response.text();
-    console.log('📥 Raw response:', responseText);
+    console.log('📥 Raw response received');
     
     try {
       const data = JSON.parse(responseText);
-      console.log('📊 Parsed response:', data);
+      console.log('✅ Parsed JSON response');
+      
+      // Log important fields
+      if (data.success) {
+        console.log('🎉 Success!');
+        console.log('📝 Has transcript?', !!data.transcript);
+        console.log('🧠 Has summary?', !!data.summary);
+        console.log('📋 Has action items?', data.actionItems?.length || 0);
+      } else {
+        console.error('❌ Backend returned error:', data.error);
+      }
+      
       return data;
     } catch (parseError) {
       console.error('❌ Failed to parse JSON:', parseError);
-      console.error('Raw response:', responseText.substring(0, 200));
-      throw new Error(`Server returned invalid JSON`);
+      console.error('Raw response (first 500 chars):', responseText.substring(0, 500));
+      throw new Error('Server returned invalid response');
     }
     
   } catch (error) {
@@ -43,15 +55,13 @@ export const uploadAudio = async (audioFile) => {
   }
 };
 
-// ✅ ADD THIS: Check if backend is running
 export const checkHealth = async () => {
   try {
     const response = await fetch('http://localhost:5000/api/health');
     const data = await response.json();
-    console.log('🏥 Backend health:', data);
     return data;
   } catch (error) {
-    console.error('❌ Health check failed:', error);
+    console.error('Health check failed:', error);
     return { 
       status: 'unhealthy', 
       error: 'Backend not running',
@@ -59,7 +69,6 @@ export const checkHealth = async () => {
     };
   }
 };
-
 // ✅ Optional: Add this too for getting files
 export const getFiles = async () => {
   try {
