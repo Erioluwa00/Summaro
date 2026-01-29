@@ -2,6 +2,7 @@ import React from 'react';
 import { ChevronDown, ChevronUp, Copy, Share2, Save, FileAudio, Check, BarChart, Mic } from 'lucide-react';
 import Button from '../Button';
 
+// In ResultsView.jsx, add Deepgram info
 const ResultsView = ({ 
   onNewNote, 
   isTranscriptExpanded, 
@@ -13,165 +14,100 @@ const ResultsView = ({
   
   if (!apiResult) return null;
 
-  const formatFileSize = (bytes) => {
-    if (!bytes || bytes === 0) return 'Unknown size';
-    if (bytes < 1024) return bytes + ' B';
-    if (bytes < 1024 * 1024) return (bytes / 1024).toFixed(1) + ' KB';
-    return (bytes / (1024 * 1024)).toFixed(2) + ' MB';
-  };
-
-  const formatDuration = (seconds) => {
-    if (!seconds) return 'Unknown';
-    const mins = Math.floor(seconds / 60);
-    const secs = Math.floor(seconds % 60);
-    return `${mins}:${secs.toString().padStart(2, '0')}`;
-  };
-
-  // Safely get data from response
-  const getTranscript = () => {
-    return apiResult.transcript || 'No transcript available';
-  };
-
-  const getSummary = () => {
-    return apiResult.summary || 'No summary generated';
-  };
-
-  const getActionItems = () => {
-    return apiResult.actionItems || [];
-  };
-
-  const getFileName = () => {
-    return apiResult.file?.originalName || 'Audio File';
-  };
-
-  const getFileSize = () => {
-    return apiResult.file?.size;
-  };
-
-  const getDuration = () => {
-    return apiResult.file?.duration || apiResult.processing?.duration;
-  };
-
-  const transcript = getTranscript();
-  const summary = getSummary();
-  const actionItems = getActionItems();
-  const fileName = getFileName();
-  const fileSize = getFileSize();
-  const duration = getDuration();
-
   return (
     <div className="results-view slide-up">
       
-      {/* Success Message */}
-      {/* <div className="success-message">
-        <Mic size={20} />
-        <div>
-          <strong>✅ Audio Successfully Processed!</strong>
-          <p>Your voice note has been transcribed and summarized by AI.</p>
+      {/* Deepgram Processing Badge */}
+      {/* {apiResult.deepgramResult && (
+        <div className="deepgram-badge">
+          <div className="deepgram-icon">🤖</div>
+          <div className="deepgram-info">
+            <span className="deepgram-model">Deepgram {apiResult.deepgramResult.model}</span>
+            <span className="deepgram-confidence">
+              {apiResult.deepgramResult.confidence || apiResult.stats?.confidence || 'High'} confidence
+            </span>
+          </div>
         </div>
-      </div> */}
-
-      {/* Header with file info */}
+      )} */}
+      
+      {/* File Info */}
       <div className="results-header">
         <div className="meta-info">
           <FileAudio size={16} />
           <span>
-            {fileName}
-            {fileSize && ` • ${formatFileSize(fileSize)}`}
-            {duration && ` • ${formatDuration(duration)}`}
+            {apiResult.file?.originalName || 'Audio file'} • 
+            {apiResult.file?.duration && ` ${Math.round(apiResult.file.duration)}s`}
           </span>
         </div>
         <div>
           <Button variant="icon" onClick={onNewNote} aria-label="New Note">
-            <span style={{ fontSize: '0.75rem', fontWeight: 'bold' }}>UPLOAD NEW</span>
+            <span style={{ fontSize: '0.75rem', fontWeight: 'bold' }}>NEW</span>
           </Button>
         </div>
       </div>
 
-      {/* Processing info */}
-      {apiResult.processing && (
-        <div className="processing-info">
-          <span className="processing-badge">
-            <BarChart size={12} />
-            {apiResult.processing.provider || 'Deepgram'} {apiResult.processing.model || 'nova-3'}
-          </span>
-          {apiResult.processing.confidence && (
-            <span className="processing-time">
-              Confidence: {(apiResult.processing.confidence * 100).toFixed(1)}%
-            </span>
-          )}
-        </div>
-      )}
-
-      {/* Stats card */}
+      {/* Stats */}
       {apiResult.stats && (
-        <div className="stats-card">
-          <div className="stat">
-            <div className="stat-value">{apiResult.stats.compression || '80%'}</div>
-            <div className="stat-label">Condensed</div>
+        <div className="stats-grid">
+          <div className="stat-box">
+            <div className="stat-value">{apiResult.stats.compression}</div>
+            <div className="stat-label">Compressed</div>
           </div>
-          <div className="stat">
-            <div className="stat-value">{apiResult.stats.actionItemsFound || actionItems.length}</div>
+          <div className="stat-box">
+            <div className="stat-value">{apiResult.stats.actionItemsCount}</div>
             <div className="stat-label">Action Items</div>
           </div>
-          <div className="stat">
-            <div className="stat-value">
-              {apiResult.stats.sentencesInSummary || summary.split(/[.!?]+/).filter(s => s.trim().length > 0).length}/
-              {apiResult.stats.sentencesInOriginal || transcript.split(/[.!?]+/).filter(s => s.trim().length > 0).length}
-            </div>
-            <div className="stat-label">Sentences</div>
+          <div className="stat-box">
+            <div className="stat-value">{apiResult.stats.confidence}</div>
+            <div className="stat-label">Confidence</div>
           </div>
         </div>
       )}
 
-      {/* Main Results Card */}
+      {/* Main Card */}
       <div className="card">
         
-        {/* Summary Section */}
+        {/* AI Summary Section */}
         <div className="section-summary">
           <div className="section-header">
-            <h3 className="section-title">AI Summary</h3>
+            <div className="section-title-row">
+              <h3 className="section-title">AI Summary</h3>
+              {apiResult.deepgramResult?.summaryType && (
+                <span className="summary-badge">
+                  Deepgram {apiResult.deepgramResult.summaryType}
+                </span>
+              )}
+            </div>
             <div className="actions-row">
               <Button variant="icon" onClick={onCopy} title="Copy Summary">
                 {showCopiedToast ? <Check size={18} color="#22c55e" /> : <Copy size={18} />}
               </Button>
-              <Button variant="icon" title="Save" onClick={() => {
-                const blob = new Blob([summary], { type: 'text/plain' });
-                const url = URL.createObjectURL(blob);
-                const a = document.createElement('a');
-                a.href = url;
-                a.download = `summary-${fileName.replace(/\.[^/.]+$/, "")}.txt`;
-                a.click();
-              }}>
-                <Save size={18} />
-              </Button>
-              <Button variant="icon" title="Share" onClick={() => {
-                if (navigator.share) {
-                  navigator.share({
-                    title: 'Summaro Summary',
-                    text: summary,
-                  });
-                } else {
-                  alert('Sharing is not supported in this browser');
-                }
-              }}>
-                <Share2 size={18} />
-              </Button>
             </div>
           </div>
-          <p className="summary-text">
-            {summary}
-          </p>
+          <div className="ai-summary-content">
+            <p className="summary-text">
+              {apiResult.summary}
+            </p>
+            {apiResult.deepgramResult?.hasActionItems && (
+              <div >
+                {/* <span className="ai-icon">✨</span>
+                <span>AI-generated summary with action items</span> */}
+              </div>
+            )}
+          </div>
         </div>
 
-        {/* Action Items Section */}
-        {actionItems.length > 0 && (
+        {/* Action Items from Deepgram */}
+        {apiResult.actionItems && apiResult.actionItems.length > 0 && (
           <div className="section-actions">
-            <h3 className="action-title">🎯 Key Takeaways</h3>
+            <div className="section-header">
+              <h3 className="action-title">AI-Detected Action Items</h3>
+              <span className="action-count">{apiResult.actionItems.length} items</span>
+            </div>
             <ul className="action-list">
-              {actionItems.map((item, idx) => (
+              {apiResult.actionItems.map((item, idx) => (
                 <li key={idx} className="action-item">
-                  <div className="dot"></div>
+                  <div className="action-number">{idx + 1}</div>
                   <span className="action-text">{item}</span>
                 </li>
               ))}
@@ -179,65 +115,34 @@ const ResultsView = ({
           </div>
         )}
 
-        {/* Transcript Section */}
+        {/* Transcript */}
         <div className="section-transcript">
-          <div className="transcript-header">
-            <h3 className="transcript-title">📝 Full Transcript</h3>
-            <button 
-              onClick={toggleTranscript}
-              className="transcript-toggle-btn"
-            >
-              {isTranscriptExpanded ? "Hide" : "Show"} Full Transcript
-              {isTranscriptExpanded ? <ChevronUp size={16} /> : <ChevronDown size={16} />}
-            </button>
-          </div>
+          <button 
+            onClick={toggleTranscript}
+            className="transcript-toggle-btn"
+          >
+            {isTranscriptExpanded ? "Hide Full Transcript" : "Show AI Transcript"}
+            {isTranscriptExpanded ? <ChevronUp size={16} /> : <ChevronDown size={16} />}
+          </button>
           
-          {/* Transcript Preview (always show some text) */}
-          <div className="transcript-preview">
-            {transcript.length > 300 ? (
-              <>
-                {transcript.substring(0, 300)}...
-                {!isTranscriptExpanded && (
-                  <button 
-                    onClick={toggleTranscript}
-                    style={{
-                      background: 'none',
-                      border: 'none',
-                      color: 'var(--accent)',
-                      cursor: 'pointer',
-                      marginLeft: '0.5rem',
-                      fontWeight: '500'
-                    }}
-                  >
-                    Read more
-                  </button>
-                )}
-              </>
-            ) : (
-              transcript
-            )}
-          </div>
-          
-          {/* Full Transcript (shown when expanded) */}
-          {isTranscriptExpanded && transcript.length > 300 && (
+          {isTranscriptExpanded && (
             <div className="transcript-content">
-              <pre>{transcript}</pre>
+              <div className="transcript-header-row">
+                <span className="transcript-source">Deepgram AI Transcription</span>
+                <span className="word-count">
+                  {apiResult.stats?.wordCount || 0} words
+                </span>
+              </div>
+              <pre>{apiResult.transcript}</pre>
             </div>
           )}
         </div>
       </div>
 
-      {/* Note about processing */}
-      {apiResult.note && (
-        <div className="processing-note">
-          <p>ℹ️ {apiResult.note}</p>
-        </div>
-      )}
-
-      {/* Toast Notification */}
+      {/* Toast */}
       {showCopiedToast && (
         <div className="toast slide-up">
-          ✅ Copied to clipboard
+          Copied to clipboard
         </div>
       )}
     </div>
