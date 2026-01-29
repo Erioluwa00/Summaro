@@ -83,25 +83,25 @@ export default function App() {
       
       // Check if we have summary and transcript
       if (!result.summary || result.summary === 'No summary generated') {
-        console.warn('⚠️  Summary missing from backend response');
+        console.warn(' Summary missing from backend response');
       }
       
       if (!result.transcript || result.transcript === 'No transcript available') {
-        console.warn('⚠️  Transcript missing from backend response');
+        console.warn('Transcript missing from backend response');
       }
       
       setApiResult(result);
       setViewState('results');
       
     } catch (err) {
-      console.error('❌ Upload error:', err);
+      console.error(' Upload error:', err);
       setError(`Error: ${err.message}`);
       setViewState('input');
     }
   };
 
   const handleStartRecording = () => {
-    setError('🎤 Recording feature coming soon! For now, please upload an audio file.');
+    setError(' coming soon! For now, please upload an audio file.');
   };
 
   const handleCopy = () => {
@@ -142,8 +142,8 @@ export default function App() {
       )}
       
       {backendStatus === 'connected' && (
-        <div className="connection-banner success">
-          ✅ Backend connected
+        <div>
+          
         </div>
       )}
       

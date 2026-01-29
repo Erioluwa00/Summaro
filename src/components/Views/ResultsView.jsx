@@ -63,13 +63,13 @@ const ResultsView = ({
     <div className="results-view slide-up">
       
       {/* Success Message */}
-      <div className="success-message">
+      {/* <div className="success-message">
         <Mic size={20} />
         <div>
           <strong>✅ Audio Successfully Processed!</strong>
           <p>Your voice note has been transcribed and summarized by AI.</p>
         </div>
-      </div>
+      </div> */}
 
       {/* Header with file info */}
       <div className="results-header">
