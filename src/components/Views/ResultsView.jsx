@@ -127,7 +127,7 @@ const ResultsView = ({
           {isTranscriptExpanded && (
             <div className="transcript-content">
               <div className="transcript-header-row">
-                <span className="transcript-source">Deepgram AI Transcription</span>
+                <span className="transcript-source">Transcription</span>
                 <span className="word-count">
                   {apiResult.stats?.wordCount || 0} words
                 </span>
