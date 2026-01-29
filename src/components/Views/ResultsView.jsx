@@ -89,9 +89,8 @@ const ResultsView = ({
               {apiResult.summary}
             </p>
             {apiResult.deepgramResult?.hasActionItems && (
-              <div >
-                {/* <span className="ai-icon">✨</span>
-                <span>AI-generated summary with action items</span> */}
+              <div className="ai-disclaimer">
+                <span>AI-generated summary with action items</span>
               </div>
             )}
           </div>
@@ -101,7 +100,7 @@ const ResultsView = ({
         {apiResult.actionItems && apiResult.actionItems.length > 0 && (
           <div className="section-actions">
             <div className="section-header">
-              <h3 className="action-title">AI-Detected Action Items</h3>
+              <h3 className="action-title">Action Items</h3>
               <span className="action-count">{apiResult.actionItems.length} items</span>
             </div>
             <ul className="action-list">
