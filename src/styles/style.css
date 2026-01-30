@@ -1362,6 +1362,7 @@ body {
 .action-number {
   width: 24px;
   height: 24px;
+  padding: 10px;
   background: var(--accent);
   color: white;
   border-radius: 50%;
