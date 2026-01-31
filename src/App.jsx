@@ -100,10 +100,10 @@ export default function App() {
     }
   };
 
-  const handleStartRecording = () => {
-    setError(' coming soon! For now, please upload an audio file.');
-  };
-
+ const handleStartRecording = () => {
+  // This is now handled inside InputView
+  console.log('Recording started from InputView component');
+};
   const handleCopy = () => {
     if (!apiResult) return;
     
@@ -157,7 +157,7 @@ export default function App() {
       <main className="container" style={{ flex: 1, position: 'relative' }}>
         {viewState === 'input' && (
           <InputView 
-            onStart={handleStartRecording}
+            // onStart={handleStartRecording}
             onFileUpload={handleFileUpload}
           />
         )}
