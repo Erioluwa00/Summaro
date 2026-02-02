@@ -203,7 +203,7 @@ const InputView = ({ onStart, onFileUpload }) => {
           Upload Audio File
         </Button>
         <p className="file-hint">
-          Supports .mp3, .wav, .m4a, .ogg, .flac, .webm • Max 10MB
+          Supports .mp3, .wav, .m4a, .ogg, .flac, .webm • Max 50MB
         </p>
         <p className="recording-hint">
           Or click the microphone to record directly
