@@ -179,7 +179,7 @@ const InputView = ({ onStart, onFileUpload }) => {
           </button>
           {permissionDenied && (
             <div className="permission-warning">
-               Microphone access denied. Please allow in browser settings.
+               Microphone access is denied. Please allow it in browser settings.
             </div>
           )}
         </div>
