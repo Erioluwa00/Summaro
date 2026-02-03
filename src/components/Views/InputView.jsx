@@ -70,7 +70,7 @@ const InputView = ({ onStart, onFileUpload }) => {
   // Stop and save recording
   const handleSaveRecording = async () => {
     try {
-      console.log('💾 Saving recording...');
+      console.log('Saving recording...');
       
       const audioFile = await recorder.stopRecording();
       
