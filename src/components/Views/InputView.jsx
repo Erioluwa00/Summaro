@@ -35,7 +35,7 @@ const InputView = ({ onStart, onFileUpload }) => {
   const handleStartRecording = async () => {
     try {
       setPermissionDenied(false);
-      console.log('🎤 Starting recording...');
+      console.log(' Starting recording...');
       
       await recorder.startRecording((time) => {
         setRecordingTime(time);
