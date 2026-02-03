@@ -15,7 +15,7 @@ const InputView = ({ onStart, onFileUpload }) => {
   // Check browser support on mount
   useEffect(() => {
     if (!recorder.isSupported()) {
-      console.warn('⚠️ Recording not supported in this browser');
+      console.warn('Recording not supported in this browser');
     }
   }, []);
 
