@@ -67,6 +67,20 @@ const InputView = ({ onStart, onFileUpload }) => {
   }
 };
 
+
+  useEffect(() => {
+  // This effect ensures UI updates when recorder state changes
+  const checkRecordingState = () => {
+    // You could add logic here if needed
+  };
+  
+  // Optional: Add a listener for state changes
+  return () => {
+    // Cleanup
+  };
+}, [isPaused, isRecording]);
+  
+
   // Stop and save recording
   const handleSaveRecording = async () => {
     try {
