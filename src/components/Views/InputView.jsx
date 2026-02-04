@@ -57,15 +57,15 @@ const InputView = ({ onStart, onFileUpload }) => {
   };
 
   // Pause/Resume recording
-  const handlePauseResume = () => {
-    if (isPaused) {
-      recorder.resumeRecording();
-      setIsPaused(false);
-    } else {
-      recorder.pauseRecording();
-      setIsPaused(true);
-    }
-  };
+ const handlePauseResume = () => {
+  if (isPaused) {
+    recorder.resumeRecording();
+    setIsPaused(false);
+  } else {
+    recorder.pauseRecording();
+    setIsPaused(true);
+  }
+};
 
   // Stop and save recording
   const handleSaveRecording = async () => {

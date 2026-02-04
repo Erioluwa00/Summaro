@@ -5,10 +5,11 @@ class AudioRecorder {
   constructor() {
     this.stream = null;
     this.recorder = null;
-    this.audioChunks = [];
     this.isRecording = false;
     this.startTime = null;
     this.timerInterval = null;
+    this.elapsedTime = 0; // Track elapsed time separately
+    this.isPaused = false; // Track paused state
   }
 
   // Check if browser supports recording
@@ -42,24 +43,17 @@ class AudioRecorder {
         recorderType: RecordRTC.StereoAudioRecorder,
         numberOfAudioChannels: 1,
         desiredSampRate: 16000,
-        timeSlice: 1000, // Update every second
-        ondataavailable: (blob) => {
-          this.audioChunks.push(blob);
-        }
       });
 
       // Start recording
       this.recorder.startRecording();
       this.isRecording = true;
+      this.isPaused = false;
       this.startTime = Date.now();
+      this.elapsedTime = 0;
       
       // Start timer
-      this.timerInterval = setInterval(() => {
-        if (onTimeUpdate) {
-          const elapsed = Math.floor((Date.now() - this.startTime) / 1000);
-          onTimeUpdate(elapsed);
-        }
-      }, 1000);
+      this.startTimer(onTimeUpdate);
 
       console.log('🎙️ Recording started');
       return true;
@@ -70,20 +64,37 @@ class AudioRecorder {
     }
   }
 
+  // Start timer
+  startTimer(onTimeUpdate) {
+    if (this.timerInterval) {
+      clearInterval(this.timerInterval);
+    }
+    
+    this.timerInterval = setInterval(() => {
+      if (!this.isPaused) {
+        this.elapsedTime = Math.floor((Date.now() - this.startTime) / 1000);
+        if (onTimeUpdate) {
+          onTimeUpdate(this.elapsedTime);
+        }
+      }
+    }, 1000);
+  }
+
   // Pause recording
   pauseRecording() {
-    if (this.recorder && this.isRecording) {
+    if (this.recorder && this.isRecording && !this.isPaused) {
       this.recorder.pauseRecording();
-      this.isRecording = false;
+      this.isPaused = true;
       console.log('⏸️ Recording paused');
     }
   }
 
   // Resume recording
   resumeRecording() {
-    if (this.recorder && !this.isRecording) {
+    if (this.recorder && this.isRecording && this.isPaused) {
       this.recorder.resumeRecording();
-      this.isRecording = true;
+      this.isPaused = false;
+      this.startTime = Date.now() - (this.elapsedTime * 1000); // Adjust start time
       console.log('▶️ Recording resumed');
     }
   }
@@ -134,6 +145,13 @@ class AudioRecorder {
   cancelRecording() {
     if (this.recorder) {
       console.log('❌ Recording cancelled');
+      
+      // Stop timer
+      if (this.timerInterval) {
+        clearInterval(this.timerInterval);
+        this.timerInterval = null;
+      }
+      
       this.recorder.stopRecording(() => {
         this.cleanup();
       });
@@ -156,15 +174,15 @@ class AudioRecorder {
     // Reset state
     this.stream = null;
     this.recorder = null;
-    this.audioChunks = [];
     this.isRecording = false;
+    this.isPaused = false;
     this.startTime = null;
+    this.elapsedTime = 0;
   }
 
   // Get recording duration
   getDuration() {
-    if (!this.startTime) return 0;
-    return Math.floor((Date.now() - this.startTime) / 1000);
+    return this.elapsedTime;
   }
 
   // Convert seconds to MM:SS format
