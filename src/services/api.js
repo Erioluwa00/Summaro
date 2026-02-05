@@ -2,7 +2,7 @@ import axios from 'axios';
 
 // Create axios instance with base URL
 const api = axios.create({
-  baseURL: 'http://localhost:5000/api',
+  baseURL: `${import.meta.env.VITE_API_URL}`,
   timeout: 30000, // 30 seconds for large files
 });
 
@@ -57,7 +57,7 @@ export const uploadAudio = async (audioFile) => {
 
 export const checkHealth = async () => {
   try {
-    const response = await fetch('http://localhost:5000/api/health');
+    const response = await fetch(`${import.meta.env.VITE_API_URL}/api/health`);
     const data = await response.json();
     return data;
   } catch (error) {
@@ -72,7 +72,7 @@ export const checkHealth = async () => {
 // ✅ Optional: Add this too for getting files
 export const getFiles = async () => {
   try {
-    const response = await fetch('http://localhost:5000/api/files');
+    const response = await fetch(`${import.meta.env.VITE_API_URL}/api/files`);
     return await response.json();
   } catch (error) {
     console.error('Failed to fetch files:', error);

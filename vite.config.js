@@ -4,7 +4,9 @@ import react from '@vitejs/plugin-react'
 // https://vite.dev/config/
 export default defineConfig({
   plugins: [react()],
-    server: {
+  // REMOVE the entire server/proxy section for production!
+  // OR keep it only for development:
+  server: process.env.NODE_ENV !== 'production' ? {
     proxy: {
       '/api': {
         target: 'http://localhost:5000',
@@ -15,5 +17,5 @@ export default defineConfig({
         changeOrigin: true,
       }
     }
-  }
+  } : undefined
 })
