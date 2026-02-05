@@ -3,6 +3,7 @@ import { ChevronDown, ChevronUp, Copy, Share2, Save, FileAudio, Check, BarChart,
 import Button from '../Button';
 
 // In ResultsView.jsx, add Deepgram info
+// In ResultsView.jsx, update the rendering
 const ResultsView = ({ 
   onNewNote, 
   isTranscriptExpanded, 
@@ -14,21 +15,15 @@ const ResultsView = ({
   
   if (!apiResult) return null;
 
+  // Use formatted output if available
+  const displaySummary = apiResult.formattedOutput?.summary || apiResult.summary;
+  const displayActionItems = apiResult.formattedOutput?.actionItems || 
+    (apiResult.actionItems && Array.isArray(apiResult.actionItems) 
+      ? apiResult.actionItems.map((item, idx) => `${idx + 1}. ${item}`).join('\n')
+      : '');
+
   return (
     <div className="results-view slide-up">
-      
-      {/* Deepgram Processing Badge */}
-      {/* {apiResult.deepgramResult && (
-        <div className="deepgram-badge">
-          <div className="deepgram-icon">🤖</div>
-          <div className="deepgram-info">
-            <span className="deepgram-model">Deepgram {apiResult.deepgramResult.model}</span>
-            <span className="deepgram-confidence">
-              {apiResult.deepgramResult.confidence || apiResult.stats?.confidence || 'High'} confidence
-            </span>
-          </div>
-        </div>
-      )} */}
       
       {/* File Info */}
       <div className="results-header">
@@ -67,16 +62,11 @@ const ResultsView = ({
       {/* Main Card */}
       <div className="card">
         
-        {/* AI Summary Section */}
+        {/* Summary Section */}
         <div className="section-summary">
           <div className="section-header">
             <div className="section-title-row">
-              <h3 className="section-title">AI Summary</h3>
-              {apiResult.deepgramResult?.summaryType && (
-                <span className="summary-badge">
-                  Deepgram {apiResult.deepgramResult.summaryType}
-                </span>
-              )}
+              <h3 className="section-title">Summary</h3>
             </div>
             <div className="actions-row">
               <Button variant="icon" onClick={onCopy} title="Copy Summary">
@@ -85,32 +75,30 @@ const ResultsView = ({
             </div>
           </div>
           <div className="ai-summary-content">
-            <p className="summary-text">
-              {apiResult.summary}
-            </p>
-            {apiResult.deepgramResult?.hasActionItems && (
-              <div className="ai-disclaimer">
-                <span>AI-generated summary with action items</span>
-              </div>
-            )}
+            <div className="summary-sentences">
+              {displaySummary.split('\n').map((sentence, idx) => (
+                <div key={idx} className="sentence-item">
+                  <span className="sentence-text">{sentence}</span>
+                </div>
+              ))}
+            </div>
           </div>
         </div>
 
-        {/* Action Items from Deepgram */}
-        {apiResult.actionItems && apiResult.actionItems.length > 0 && (
+        {/* Action Items Section */}
+        {displayActionItems && (
           <div className="section-actions">
             <div className="section-header">
               <h3 className="action-title">Action Items</h3>
-              <span className="action-count">{apiResult.actionItems.length} items</span>
             </div>
-            <ul className="action-list">
-              {apiResult.actionItems.map((item, idx) => (
-                <li key={idx} className="action-item">
+            <div className="action-items-list">
+              {displayActionItems.split('\n').map((item, idx) => (
+                <div key={idx} className="action-item-row">
                   <div className="action-number">{idx + 1}</div>
-                  <span className="action-text">{item}</span>
-                </li>
+                  <div className="action-text">{item.replace(/^\d+\.\s*/, '')}</div>
+                </div>
               ))}
-            </ul>
+            </div>
           </div>
         )}
 
@@ -120,14 +108,14 @@ const ResultsView = ({
             onClick={toggleTranscript}
             className="transcript-toggle-btn"
           >
-            {isTranscriptExpanded ? "Hide Full Transcript" : "Show AI Transcript"}
+            {isTranscriptExpanded ? "Hide Full Transcript" : "Show Transcript"}
             {isTranscriptExpanded ? <ChevronUp size={16} /> : <ChevronDown size={16} />}
           </button>
           
           {isTranscriptExpanded && (
             <div className="transcript-content">
               <div className="transcript-header-row">
-                <span className="transcript-source">Transcription</span>
+                <span className="transcript-source">Full Transcript</span>
                 <span className="word-count">
                   {apiResult.stats?.wordCount || 0} words
                 </span>

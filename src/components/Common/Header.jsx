@@ -1,15 +1,17 @@
 import React from 'react';
 import { Moon, Sun } from 'lucide-react';
 import Button from '../Button';
+import Logo from '../../assets/Logo.png'
 
 const Header = ({ theme, toggleTheme }) => {
   return (
     <header className="app-header">
       <nav className="nav-bar">
         <div className="logo">
-          <div className="logo-icon">
-            <div className="logo-dot"></div>
-          </div>
+          {/* <div className="logo-icon"> */}
+              <img src={Logo} className='logo-img' />
+            {/* <div className="logo-dot"></div> */}
+          {/* </div> */}
           <span>Summaro</span>
         </div>
         
