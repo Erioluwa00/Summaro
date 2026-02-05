@@ -17,7 +17,7 @@ export const uploadAudio = async (audioFile) => {
   try {
     console.log('📤 Starting upload to backend...');
     
-    const response = await fetch('http://localhost:5000/api/upload-audio', {
+    const response = await fetch(`${import.meta.env.VITE_API_URL}/api/upload-audio`, {
       method: 'POST',
       body: formData,
     });
