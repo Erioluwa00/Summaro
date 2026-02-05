@@ -85,22 +85,7 @@ const ResultsView = ({
           </div>
         </div>
 
-        {/* Action Items Section */}
-        {displayActionItems && (
-          <div className="section-actions">
-            <div className="section-header">
-              <h3 className="action-title">Action Items</h3>
-            </div>
-            <div className="action-items-list">
-              {displayActionItems.split('\n').map((item, idx) => (
-                <div key={idx} className="action-item-row">
-                  <div className="action-number">{idx + 1}</div>
-                  <div className="action-text">{item.replace(/^\d+\.\s*/, '')}</div>
-                </div>
-              ))}
-            </div>
-          </div>
-        )}
+
 
         {/* Transcript */}
         <div className="section-transcript">

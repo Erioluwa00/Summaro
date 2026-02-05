@@ -153,7 +153,7 @@ const InputView = ({ onStart, onFileUpload }) => {
               className={`control-btn ${isPaused ? 'resume' : 'pause'}`}
               title={isPaused ? 'Resume Recording' : 'Pause Recording'}
             >
-              {isPaused ? <Play size={20} /> : <Pause size={20} />}
+              {isPaused ? <Play size={20} className='play-icon' /> : <Pause size={20} className='pause-icon'/>}
             </Button>
             
             <Button 
@@ -162,7 +162,7 @@ const InputView = ({ onStart, onFileUpload }) => {
               className="control-btn save"
               title="Save and Process"
             >
-              <Check size={20} />
+              <Check size={20} className='check-icon'/>
             </Button>
             
             <Button 
@@ -171,7 +171,7 @@ const InputView = ({ onStart, onFileUpload }) => {
               className="control-btn cancel"
               title="Cancel Recording"
             >
-              <Trash2 size={20} />
+              <Trash2 size={20} className='trash-icon'/>
             </Button>
           </div>
           

@@ -1489,23 +1489,35 @@ body {
 }
 
 .control-btn.pause {
-  background: orange;
-  color: white;
+  /* background: orange;
+  color: white; */
+  /* background-color: white; */
+  border:3px solid orange;
 }
 
 .control-btn.resume {
-  background: green;
-  color: white;
+  /* background: green;
+  color: white; */
+    /* background-color: white; */
+  border:3px solid green;
 }
-
+.play-icon, .trash-icon, .check-icon, .pause-icon {
+ stroke-width: 2.5; 
+  width: 22px;
+  height: 22px;
+}
 .control-btn.save {
-  background: blue;
-  color: white;
+  /* background: blue;
+  color: white; */
+    /* background-color: white; */
+  border:3px solid blue;
 }
 
 .control-btn.cancel {
-  background: red;
-  color: white;
+  /* background: red; */
+    border:3px solid red;
+
+  /* color: white; */
 }
 
 .control-btn:hover {
